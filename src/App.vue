@@ -9,6 +9,9 @@ const play = ref(false)
 const interval = ref()
 const ms = ref(60000)
 const opacity = ref(0.5)
+const fontsize = ref(20)
+const textwidth = ref(400)
+const textlineheight = ref(180)
 
 function onDragover(event) {
   event.preventDefault()
@@ -87,16 +90,19 @@ function clearIllust() {
 
 <template>
   <div class="container" @dragover="onDragover" @drop="onDrop" :style="{ opacity: opacity }">
-    <div class="contents">
+    <div class="contents" :style="{ 'max-width': textwidth + 'px' }">
       <div class="control">
         <button @click="start">再生</button>
         <button @click="stop">停止</button>
         <button @click="skip">スキップ</button>
         <button @click="clearIllust">イラストクリア</button>
-        <input class="num" type="number" v-model="ms"><br>
-        <input type="range" min="0.05" max="1" step="0.01" v-model="opacity">
+        ミリ秒<input class="num" type="number" v-model="ms"><br>
+        透明度<input type="range" min="0.05" max="1" step="0.01" v-model="opacity"><br>
+        文字<input type="range" min="10" max="100" step="1" v-model="fontsize"><br>
+        幅<input type="range" min="100" max="1000" step="1" v-model="textwidth"><br>
+        行間<input type="range" min="50" max="400" step="1" v-model="textlineheight">
       </div>
-      <pre>{{ text }}</pre>
+      <pre :style="{ 'font-size': fontsize + 'px', 'line-height': textlineheight + '%' }">{{ text }}</pre>
     </div>
   </div>
   <div class="imgwrapper">
@@ -132,8 +138,6 @@ img {
 pre {
   font-family: serif;
   white-space: pre-wrap;
-  line-height: 180%;
-  font-size: 20px;
   margin-top: 100px;
   text-shadow:
     white 1px 1px 1px,
@@ -143,7 +147,6 @@ pre {
 }
 
 .contents {
-  max-width: 400px;
   margin-left: auto;
   margin-right: auto;
 }
