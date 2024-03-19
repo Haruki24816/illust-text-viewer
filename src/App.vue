@@ -2,16 +2,18 @@
 import { ref } from "vue"
 
 const text = ref()
+const texts = ref([])
 const currentIllust = ref()
-
 const illusts = ref([])
 const play = ref(false)
 const interval = ref()
-const ms = ref(60000)
-const opacity = ref(0.5)
-const fontsize = ref(20)
-const textwidth = ref(400)
+
+const ms = ref(10000)
+const opacity = ref(0.6)
+const fontsize = ref(25)
+const textwidth = ref(500)
 const textlineheight = ref(180)
+const contrast = ref(80)
 
 function onDragover(event) {
   event.preventDefault()
@@ -21,28 +23,75 @@ function onDragover(event) {
 function onDrop(event) {
   event.preventDefault()
   event.stopPropagation()
-  let illustFile = false
+  let filetype = ""
   for (const num in event.dataTransfer.files) {
     const file = event.dataTransfer.files[num]
     if (file.type == "image/jpeg") {
       illusts.value.push(file)
-      illustFile = true
+      filetype = "illust"
     }
     if (file.type == "text/plain") {
-      const reader = new FileReader()
-      reader.onload = () => {
-        text.value = reader.result
-      }
-      reader.readAsText(file)
+      texts.value.push(file)
+      filetype = "text"
     }
   }
-  if (illustFile) {
-    start()
+  if (filetype == "illust") {
+    if (event.dataTransfer.files.length === 1) {
+      stop()
+      updateIllustUsiro()
+    } else {
+      start()
+    }
   }
+  if (filetype == "text") {
+    if (event.dataTransfer.files.length === 1) {
+      setTextUsiro()
+    } else {
+      setText()
+    }
+  }
+}
+
+function setText() {
+  if (texts.value.length === 0) {
+    return
+  }
+  const file = texts.value[Math.floor(Math.random() * texts.value.length)]
+  const reader = new FileReader()
+  reader.onload = () => {
+    text.value = reader.result
+  }
+  reader.readAsText(file)
+}
+
+function setTextUsiro() {
+  if (texts.value.length === 0) {
+    return
+  }
+  const file = texts.value[texts.value.length - 1]
+  const reader = new FileReader()
+  reader.onload = () => {
+    text.value = reader.result
+  }
+  reader.readAsText(file)
+}
+
+function clearText() {
+  texts.value = []
+  text.value = null
 }
 
 function updateIllust() {
   const file = illusts.value[Math.floor(Math.random() * illusts.value.length)]
+  const reader = new FileReader()
+  reader.onload = () => {
+    currentIllust.value = reader.result
+  }
+  reader.readAsDataURL(file)
+}
+
+function updateIllustUsiro() {
+  const file = illusts.value[illusts.value.length - 1]
   const reader = new FileReader()
   reader.onload = () => {
     currentIllust.value = reader.result
@@ -89,24 +138,61 @@ function clearIllust() {
 </script>
 
 <template>
-  <div class="container" @dragover="onDragover" @drop="onDrop" :style="{ opacity: opacity }">
+  <div class="container" @dblclick="skip" @dragover="onDragover" @drop="onDrop" :style="{ opacity: opacity }">
     <div class="contents" :style="{ 'max-width': textwidth + 'px' }">
-      <div class="control">
-        <button @click="start">再生</button>
-        <button @click="stop">停止</button>
-        <button @click="skip">スキップ</button>
-        <button @click="clearIllust">イラストクリア</button>
-        ミリ秒<input class="num" type="number" v-model="ms"><br>
-        透明度<input type="range" min="0.05" max="1" step="0.01" v-model="opacity"><br>
-        文字<input type="range" min="10" max="100" step="1" v-model="fontsize"><br>
-        幅<input type="range" min="100" max="1000" step="1" v-model="textwidth"><br>
-        行間<input type="range" min="50" max="400" step="1" v-model="textlineheight">
-      </div>
       <pre :style="{ 'font-size': fontsize + 'px', 'line-height': textlineheight + '%' }">{{ text }}</pre>
     </div>
   </div>
   <div class="imgwrapper">
-    <img :src="currentIllust" v-if="illusts.length != 0">
+    <img :src="currentIllust" v-if="illusts.length != 0" :style="{ filter: 'contrast(' + contrast + '%)' }">
+  </div>
+  <div class="control">
+    <div class="controlnakami">
+      <table>
+        <tr>
+          <td>画像枚数</td>
+          <td>{{ illusts.length }}</td>
+        </tr>
+        <tr>
+          <td>テキスト数</td>
+          <td>{{ texts.length }}</td>
+        </tr>
+        <tr>
+          <td>ミリ秒</td>
+          <td><input class="num" type="number" v-model="ms"></td>
+        </tr>
+        <tr>
+          <td>透明度</td>
+          <td><input type="range" min="0.05" max="1" step="0.01" v-model="opacity"></td>
+        </tr>
+        <tr>
+          <td>文字</td>
+          <td><input type="range" min="10" max="100" step="1" v-model="fontsize"></td>
+        </tr>
+        <tr>
+          <td>幅</td>
+          <td><input type="range" min="100" max="1000" step="1" v-model="textwidth"></td>
+        </tr>
+        <tr>
+          <td>行間</td>
+          <td><input type="range" min="50" max="400" step="1" v-model="textlineheight"></td>
+        </tr>
+        <tr>
+          <td>画像</td>
+          <td><input type="range" min="0" max="100" step="1" v-model="contrast"></td>
+        </tr>
+      </table>
+    </div>
+    <div :style="{ opacity: opacity }">
+      📝
+      <button @click="setText">⏭️</button>
+      <button @click="clearText">🆑</button><br>
+      🖼️
+      <button @click="start" v-if="!play">▶️</button>
+      <button @click="stop" v-if="play">⏸️</button>
+      <button @click="skip">⏭️</button>
+      <button @click="clearIllust">🆑</button>
+    </div>
   </div>
 </template>
 
@@ -136,9 +222,10 @@ img {
 }
 
 pre {
+  margin: 0;
   font-family: serif;
   white-space: pre-wrap;
-  margin-top: 100px;
+  user-select: none;
   text-shadow:
     white 1px 1px 1px,
     white 1px -1px 1px,
@@ -152,11 +239,25 @@ pre {
 }
 
 .control {
-  width: 100%;
-  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
-.num {
-  width: 80px
+.controlnakami {
+  display: none;
+  margin: 10px;
+}
+
+.control:hover .controlnakami {
+  display: block;
+}
+
+tr {
+  height: 30px;
+}
+
+td {
+  padding-right: 10px;
 }
 </style>
