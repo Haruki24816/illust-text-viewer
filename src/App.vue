@@ -246,7 +246,9 @@ pre {
 
 .controlnakami {
   display: none;
-  margin: 10px;
+  margin: 5px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .control:hover .controlnakami {
