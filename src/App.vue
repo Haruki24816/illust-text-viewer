@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue"
+import { halfKataToWide, toHira, toWideKata, toHalfKata } from "./katakana"
 
 const text = ref()
 const texts = ref([])
@@ -14,6 +15,7 @@ const fontsize = ref(25)
 const textwidth = ref(500)
 const textlineheight = ref(180)
 const contrast = ref(80)
+const hankakukana = ref(true)
 
 function onDragover(event) {
   event.preventDefault()
@@ -59,7 +61,11 @@ function setText() {
   const file = texts.value[Math.floor(Math.random() * texts.value.length)]
   const reader = new FileReader()
   reader.onload = () => {
-    text.value = reader.result
+    if (hankakukana.value) {
+      text.value = halfKataToWide(reader.result)
+    } else {
+      text.value = reader.result
+    }
   }
   reader.readAsText(file)
 }
@@ -71,7 +77,11 @@ function setTextUsiro() {
   const file = texts.value[texts.value.length - 1]
   const reader = new FileReader()
   reader.onload = () => {
-    text.value = reader.result
+    if (hankakukana.value) {
+      text.value = halfKataToWide(reader.result)
+    } else {
+      text.value = reader.result
+    }
   }
   reader.readAsText(file)
 }
@@ -180,6 +190,10 @@ function clearIllust() {
         <tr>
           <td>画像</td>
           <td><input type="range" min="0" max="100" step="1" v-model="contrast"></td>
+        </tr>
+        <tr>
+          <td>半角カナ変換</td>
+          <td><input type="checkbox" v-model="hankakukana"></td>
         </tr>
       </table>
     </div>
