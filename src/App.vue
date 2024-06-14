@@ -100,6 +100,7 @@ function setText() {
     }
   }
   reader.readAsText(file)
+  window.location.replace("#top")
 }
 
 function setTextUsiro() {
@@ -116,6 +117,7 @@ function setTextUsiro() {
     }
   }
   reader.readAsText(file)
+  window.location.replace("#top")
 }
 
 function clearText() {
@@ -182,6 +184,7 @@ function clearIllust() {
 <template>
   <div class="container" @dblclick="skip" @dragover="onDragover" @drop="onDrop" :style="{ opacity: opacity }">
     <div class="contents" :style="{ 'max-width': textwidth + 'px' }">
+      <div id="top"></div>
       <pre :style="{ 'font-size': fontsize + 'px', 'line-height': textlineheight + '%' }">{{ text }}</pre>
     </div>
   </div>
