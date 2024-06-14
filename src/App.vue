@@ -22,35 +22,67 @@ function onDragover(event) {
   event.stopPropagation()
 }
 
-function onDrop(event) {
+const onDrop = async (event) => {
   event.preventDefault()
   event.stopPropagation()
-  let filetype = ""
-  for (const num in event.dataTransfer.files) {
-    const file = event.dataTransfer.files[num]
-    if (file.type == "image/jpeg") {
-      illusts.value.push(file)
-      filetype = "illust"
+
+  const fileList = []
+  const items = event.dataTransfer.items
+  let textFileCount = 0
+  let illustFileCount = 0
+
+  for (const item of items) {
+    const entry = item.webkitGetAsEntry()
+    const loop = async (entry) => {
+      if (entry.isFile) {
+        const file = await new Promise((resolve) => {
+          entry.file((file) => {
+            resolve(file)
+          })
+        })
+        let fileExt = file.name.split(".").pop()
+        if (["jpg", "jpeg", "png", "JPG", "JPEG", "PNG"].includes(fileExt)) {
+          illusts.value.push(file)
+          illustFileCount += 1
+        }
+        if (["txt", "TXT"].includes(fileExt)) {
+          texts.value.push(file)
+          textFileCount += 1
+        }
+        fileList.push(file)
+      } else if (entry.isDirectory) {
+        const directoryReader = entry.createReader()
+        const children = await new Promise((resolve) => {
+          directoryReader.readEntries((children) => {
+            resolve(children)
+          })
+        })
+        for (const num in children) {
+          const child = children[num]
+          await loop(child)
+        }
+      }
     }
-    if (file.type == "text/plain") {
-      texts.value.push(file)
-      filetype = "text"
-    }
+    await loop(entry)
   }
-  if (filetype == "illust") {
-    if (event.dataTransfer.files.length === 1) {
-      stop()
-      updateIllustUsiro()
-    } else {
-      start()
-    }
+
+  console.log(fileList)
+
+  if (illustFileCount === 1) {
+    stop()
+    updateIllustUsiro()
+  } else if (illustFileCount === 0) {
+    //
+  } else {
+    start()
   }
-  if (filetype == "text") {
-    if (event.dataTransfer.files.length === 1) {
-      setTextUsiro()
-    } else {
-      setText()
-    }
+
+  if (textFileCount === 1) {
+    setTextUsiro()
+  } else if (textFileCount === 0) {
+    //
+  } else {
+    setText()
   }
 }
 
