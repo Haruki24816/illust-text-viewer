@@ -204,7 +204,7 @@ function clearIllust() {
         </tr>
         <tr>
           <td>ミリ秒</td>
-          <td><input class="num" type="number" v-model="ms"></td>
+          <td><input class="num" type="number" v-model="ms" step="1000"></td>
         </tr>
         <tr>
           <td>透明度</td>
