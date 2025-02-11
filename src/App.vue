@@ -272,7 +272,7 @@ img {
 
 pre {
   margin: 0;
-  font-family: serif;
+  font-family: "Meiryo";
   white-space: pre-wrap;
   user-select: none;
   text-shadow:
