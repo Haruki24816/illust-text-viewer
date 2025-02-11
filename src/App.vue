@@ -9,12 +9,12 @@ const illusts = ref([])
 const play = ref(false)
 const interval = ref()
 
-const ms = ref(10000)
-const opacity = ref(0.6)
-const fontsize = ref(25)
-const textwidth = ref(500)
-const textlineheight = ref(180)
-const contrast = ref(80)
+const ms = ref(5000)
+const opacity = ref(0.9)
+const fontsize = ref(18)
+const textwidth = ref(800)
+const textlineheight = ref(160)
+const contrast = ref(60)
 const hankakukana = ref(true)
 
 function onDragover(event) {
