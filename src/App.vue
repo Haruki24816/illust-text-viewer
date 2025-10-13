@@ -1,6 +1,17 @@
 <script setup>
-import { ref } from "vue"
+import { reactive, ref } from "vue"
 import { halfKataToWide, toHira, toWideKata, toHalfKata } from "./katakana"
+import gsap from "gsap"
+
+const settings = reactive({
+  "color": "#ffffff",
+  "shadow": "#000000",
+  "scale": 1,
+})
+
+const seek = reactive({
+  "seek": 0
+})
 
 const text = ref()
 const texts = ref([])
@@ -132,6 +143,8 @@ function updateIllust() {
     currentIllust.value = reader.result
   }
   reader.readAsDataURL(file)
+  seek.seek = 0
+  gsap.to(seek, { duration: (ms.value / 1000 - 0.1), seek: 100, ease: "none" })
 }
 
 function updateIllustUsiro() {
@@ -189,7 +202,7 @@ function clearIllust() {
     </div>
   </div>
   <div class="imgwrapper">
-    <img :src="currentIllust" v-if="illusts.length != 0" :style="{ filter: 'contrast(' + contrast + '%)' }">
+    <img :src="currentIllust" v-if="illusts.length != 0">
   </div>
   <div class="control">
     <div class="controlnakami">
@@ -223,12 +236,20 @@ function clearIllust() {
           <td><input type="range" min="50" max="400" step="1" v-model="textlineheight"></td>
         </tr>
         <tr>
-          <td>画像</td>
+          <td>ｺﾝﾄﾗｽﾄ</td>
           <td><input type="range" min="0" max="100" step="1" v-model="contrast"></td>
+        </tr>
+        <tr>
+          <td>拡大</td>
+          <td><input type="range" min="0.1" max="10" step="0.01" v-model="settings.scale"><button @click="settings.scale = 1">100</button></td>
         </tr>
         <tr>
           <td>半角カナ変換</td>
           <td><input type="checkbox" v-model="hankakukana"></td>
+        </tr>
+        <tr>
+          <td>文字色</td>
+          <td><input type="color" v-model="settings.color"><input type="color" v-model="settings.shadow" </td>
         </tr>
       </table>
     </div>
@@ -243,6 +264,7 @@ function clearIllust() {
       <button @click="clearIllust">🆑</button>
     </div>
   </div>
+  <div class="seek">a</div>
 </template>
 
 <style>
@@ -252,7 +274,6 @@ body {
 }
 
 .container {
-  width: 100vw;
   padding-top: 100vh;
 }
 
@@ -268,18 +289,21 @@ img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: contrast(v-bind("contrast + '%'"));
+  transform: scale(v-bind("settings.scale"));
 }
 
 pre {
   margin: 0;
   font-family: "Meiryo";
+  color: v-bind("settings.color");
   white-space: pre-wrap;
   user-select: none;
   text-shadow:
-    white 1px 1px 1px,
-    white 1px -1px 1px,
-    white -1px 1px 1px,
-    white -1px -1px 1px;
+    v-bind("settings.shadow") 1px 1px 1px,
+    v-bind("settings.shadow") 1px -1px 1px,
+    v-bind("settings.shadow") -1px 1px 1px,
+    v-bind("settings.shadow") -1px -1px 1px;
 }
 
 .contents {
@@ -310,5 +334,15 @@ tr {
 
 td {
   padding-right: 10px;
+}
+
+.seek {
+  width: v-bind("seek.seek + '%'");
+  height: 4px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  mix-blend-mode: difference;
+  background: rgb(255, 255, 255);
 }
 </style>
