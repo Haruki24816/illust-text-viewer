@@ -7,7 +7,9 @@ const settings = reactive({
   "color": "#ffffff",
   "shadow": "#000000",
   "scale": 1,
-  "dangumi": false,
+  "dangumi": true,
+  "bold": "bold",
+  "fontfamily": "Meiryo",
 })
 
 const seek = reactive({
@@ -23,8 +25,8 @@ const interval = ref()
 
 const ms = ref(5000)
 const opacity = ref(0.9)
-const fontsize = ref(18)
-const textwidth = ref(800)
+const fontsize = ref(12)
+const textwidth = ref(400)
 const textlineheight = ref(160)
 const contrast = ref(60)
 const hankakukana = ref(true)
@@ -263,7 +265,27 @@ function clearIllust() {
         </tr>
         <tr>
           <td>段組み</td>
-          <td><button @click="settings.dangumi = false">1</button><button @click="settings.dangumi = true">2</button></td>
+          <td><button @click="settings.dangumi = false">1</button><button @click="settings.dangumi = true">2</button>
+          </td>
+        </tr>
+        <tr>
+          <td>フォント</td>
+          <td>
+            <select v-model="settings.fontfamily">
+              <option value="Meiryo">Meiryo</option>
+              <option value="ＭＳ ゴシック">ＭＳ ゴシック</option>
+              <option value="ＭＳ 明朝">ＭＳ 明朝</option>
+              <option value="BIZ UDPゴシック">BIZ UDPゴシック</option>
+              <option value="BIZ UDP明朝 Medium">BIZ UDP明朝 Medium</option>
+              <option value="Noto Sans JP">Noto Sans JP</option>
+              <option value="Noto Serif JP">Noto Serif JP</option>
+              <option value="游ゴシック">游ゴシック</option>
+              <option value="游明朝">游明朝</option>
+            </select>
+            <input type="text" v-model="settings.fontfamily">
+            <button @click="settings.bold = 'normal'">普通</button>
+            <button @click="settings.bold = 'bold'">太字</button>
+          </td>
         </tr>
       </table>
     </div>
@@ -305,7 +327,8 @@ img {
 
 pre {
   margin: 0;
-  font-family: "Meiryo";
+  font-family: v-bind("settings.fontfamily");
+  font-weight: v-bind("settings.bold");
   color: v-bind("settings.color");
   white-space: pre-wrap;
   user-select: none;
