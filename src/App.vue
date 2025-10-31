@@ -7,6 +7,7 @@ const settings = reactive({
   "color": "#ffffff",
   "shadow": "#000000",
   "scale": 1,
+  "dangumi": false,
 })
 
 const seek = reactive({
@@ -196,9 +197,17 @@ function clearIllust() {
 
 <template>
   <div class="container" @dblclick="skip" @dragover="onDragover" @drop="onDrop" :style="{ opacity: opacity }">
-    <div class="contents" :style="{ 'max-width': textwidth + 'px' }">
-      <div id="top"></div>
-      <pre :style="{ 'font-size': fontsize + 'px', 'line-height': textlineheight + '%' }">{{ text }}</pre>
+    <div class="contents">
+      <div>
+        <div id="top"></div>
+        <div class="spacer"></div>
+        <div class="spacer" v-if="settings.dangumi"></div>
+        <pre :style="{ 'font-size': fontsize + 'px', 'line-height': textlineheight + '%' }">{{ text }}</pre>
+      </div>
+      <div v-if="settings.dangumi">
+        <div class="spacer"></div>
+        <pre :style="{ 'font-size': fontsize + 'px', 'line-height': textlineheight + '%' }">{{ text }}</pre>
+      </div>
     </div>
   </div>
   <div class="imgwrapper">
@@ -229,7 +238,7 @@ function clearIllust() {
         </tr>
         <tr>
           <td>幅</td>
-          <td><input type="range" min="100" max="1000" step="1" v-model="textwidth"></td>
+          <td><input type="range" min="10" max="1000" step="1" v-model="textwidth"></td>
         </tr>
         <tr>
           <td>行間</td>
@@ -241,7 +250,8 @@ function clearIllust() {
         </tr>
         <tr>
           <td>拡大</td>
-          <td><input type="range" min="0.1" max="10" step="0.01" v-model="settings.scale"><button @click="settings.scale = 1">100</button></td>
+          <td><input type="range" min="0.1" max="10" step="0.01" v-model="settings.scale"><button
+              @click="settings.scale = 1">100</button></td>
         </tr>
         <tr>
           <td>半角カナ変換</td>
@@ -249,7 +259,11 @@ function clearIllust() {
         </tr>
         <tr>
           <td>文字色</td>
-          <td><input type="color" v-model="settings.color"><input type="color" v-model="settings.shadow" </td>
+          <td><input type="color" v-model="settings.color"><input type="color" v-model="settings.shadow"></td>
+        </tr>
+        <tr>
+          <td>段組み</td>
+          <td><button @click="settings.dangumi = false">1</button><button @click="settings.dangumi = true">2</button></td>
         </tr>
       </table>
     </div>
@@ -271,10 +285,6 @@ function clearIllust() {
 body {
   margin: 0;
   background-color: darkgray;
-}
-
-.container {
-  padding-top: 100vh;
 }
 
 .imgwrapper {
@@ -306,9 +316,19 @@ pre {
     v-bind("settings.shadow") -1px -1px 1px;
 }
 
+.spacer {
+  height: 100vh;
+}
+
 .contents {
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.contents>div {
+  max-width: v-bind("textwidth + 'px'");
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .control {
