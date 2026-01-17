@@ -10,6 +10,7 @@ const settings = reactive({
   "dangumi": true,
   "bold": "bold",
   "fontfamily": "Meiryo",
+  "suraido": 0,
 })
 
 const seek = reactive({
@@ -256,6 +257,11 @@ function clearIllust() {
               @click="settings.scale = 1">100</button></td>
         </tr>
         <tr>
+          <td>スライド</td>
+          <td><input type="range" min="-200" max="200" step="1" v-model="settings.suraido"><button
+              @click="settings.suraido = 0">中央</button></td>
+        </tr>
+        <tr>
           <td>半角カナ変換</td>
           <td><input type="checkbox" v-model="hankakukana"></td>
         </tr>
@@ -322,7 +328,7 @@ img {
   height: 100%;
   object-fit: contain;
   filter: contrast(v-bind("contrast + '%'"));
-  transform: scale(v-bind("settings.scale"));
+  transform: scale(v-bind("settings.scale")) translateY(v-bind("settings.suraido + '%'"));
 }
 
 pre {
