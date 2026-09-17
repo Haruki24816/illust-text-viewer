@@ -7,7 +7,7 @@ function fuckProcess(text) {
   const risuto = text.split("\n")
   var kekka = ""
   for (const i of risuto) {
-    kekka += i + "♡\n"
+    kekka += i + settings.fuckt + "\n"
   }
   return kekka
 }
@@ -22,6 +22,7 @@ const settings = reactive({
   "suraido": 0,
   "haikeisyoku": "#a9a9a9",
   "fuck": false,
+  "fuckt": "♡",
 })
 
 const seek = reactive({
@@ -316,7 +317,7 @@ function clearIllust() {
         </tr>
         <tr>
           <td>？</td>
-          <td><input type="checkbox" v-model="settings.fuck"></td>
+          <td><input type="checkbox" v-model="settings.fuck"><input type="text" v-model="settings.fuckt"></td>
         </tr>
       </table>
     </div>
