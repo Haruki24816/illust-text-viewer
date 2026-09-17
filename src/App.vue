@@ -11,6 +11,7 @@ const settings = reactive({
   "bold": "bold",
   "fontfamily": "Meiryo",
   "suraido": 0,
+  "haikeisyoku": "#a9a9a9",
 })
 
 const seek = reactive({
@@ -293,6 +294,10 @@ function clearIllust() {
             <button @click="settings.bold = 'bold'">太字</button>
           </td>
         </tr>
+        <tr>
+          <td>背景色</td>
+          <td><input type="color" v-model="settings.haikeisyoku"></td>
+        </tr>
       </table>
     </div>
     <div :style="{ opacity: opacity }">
@@ -312,7 +317,6 @@ function clearIllust() {
 <style>
 body {
   margin: 0;
-  background-color: darkgray;
 }
 
 .imgwrapper {
@@ -352,6 +356,7 @@ pre {
 .contents {
   display: flex;
   justify-content: center;
+  background-color: v-bind("settings.haikeisyoku");
 }
 
 .contents>div {
