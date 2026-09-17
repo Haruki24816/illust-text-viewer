@@ -3,6 +3,15 @@ import { reactive, ref } from "vue"
 import { halfKataToWide, toHira, toWideKata, toHalfKata } from "./katakana"
 import gsap from "gsap"
 
+function fuckProcess(text) {
+  const risuto = text.split("\n")
+  var kekka = ""
+  for (const i of risuto) {
+    kekka += i + "♡\n"
+  }
+  return kekka
+}
+
 const settings = reactive({
   "color": "#ffffff",
   "shadow": "#000000",
@@ -12,6 +21,7 @@ const settings = reactive({
   "fontfamily": "Meiryo",
   "suraido": 0,
   "haikeisyoku": "#a9a9a9",
+  "fuck": false,
 })
 
 const seek = reactive({
@@ -109,11 +119,14 @@ function setText() {
   const file = texts.value[Math.floor(Math.random() * texts.value.length)]
   const reader = new FileReader()
   reader.onload = () => {
+    var textt = reader.result
     if (hankakukana.value) {
-      text.value = halfKataToWide(reader.result)
-    } else {
-      text.value = reader.result
+      textt = halfKataToWide(textt)
     }
+    if (settings.fuck) {
+      textt = fuckProcess(textt)
+    }
+    text.value = textt
   }
   reader.readAsText(file)
   window.location.replace("#top")
@@ -126,11 +139,14 @@ function setTextUsiro() {
   const file = texts.value[texts.value.length - 1]
   const reader = new FileReader()
   reader.onload = () => {
+    var textt = reader.result
     if (hankakukana.value) {
-      text.value = halfKataToWide(reader.result)
-    } else {
-      text.value = reader.result
+      textt = halfKataToWide(textt)
     }
+    if (settings.fuck) {
+      textt = fuckProcess(textt)
+    }
+    text.value = textt
   }
   reader.readAsText(file)
   window.location.replace("#top")
@@ -297,6 +313,10 @@ function clearIllust() {
         <tr>
           <td>背景色</td>
           <td><input type="color" v-model="settings.haikeisyoku"></td>
+        </tr>
+        <tr>
+          <td>？</td>
+          <td><input type="checkbox" v-model="settings.fuck"></td>
         </tr>
       </table>
     </div>
