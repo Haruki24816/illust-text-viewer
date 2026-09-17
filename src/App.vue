@@ -377,7 +377,6 @@ pre {
 .contents {
   display: flex;
   justify-content: center;
-  background-color: v-bind("settings.haikeisyoku");
 }
 
 .contents>div {
