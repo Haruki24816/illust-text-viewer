@@ -222,6 +222,19 @@ function clearIllust() {
   currentIllust.value = null
   settings.currentIllustName = ""
 }
+
+function linkToPixiv() {
+  if (settings.currentIllustName.includes("_master")) {
+    const pixivId = settings.currentIllustName.split("_")[0]
+    console.log(pixivId)
+    window.open("https://www.pixiv.net/artworks/" + pixivId, "_blank")
+  }
+  if (settings.currentIllustName.includes(".twitter.jpg")) {
+    const twitterId = settings.currentIllustName.split(".")[0]
+    console.log(twitterId)
+    window.open("https://twitter.com/twitter/status/" + twitterId, "_blank")
+  }
+}
 </script>
 
 <template>
@@ -247,7 +260,7 @@ function clearIllust() {
       <table>
         <tr>
           <td>画像枚数</td>
-          <td>{{ illusts.length }}：{{ settings.currentIllustName }}</td>
+          <td @click="linkToPixiv">{{ illusts.length }}：{{ settings.currentIllustName }}</td>
         </tr>
         <tr>
           <td>テキスト数</td>
