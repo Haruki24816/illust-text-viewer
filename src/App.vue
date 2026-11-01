@@ -23,6 +23,8 @@ const settings = reactive({
   "haikeisyoku": "#a9a9a9",
   "fuck": false,
   "fuckt": "♡",
+  "currentIllustName": "",
+  "currentTextName": "",
 })
 
 const seek = reactive({
@@ -128,6 +130,7 @@ function setText() {
       textt = fuckProcess(textt)
     }
     text.value = textt
+    settings.currentTextName = file.name
   }
   reader.readAsText(file)
   window.location.replace("#top")
@@ -148,6 +151,7 @@ function setTextUsiro() {
       textt = fuckProcess(textt)
     }
     text.value = textt
+    settings.currentTextName = file.name
   }
   reader.readAsText(file)
   window.location.replace("#top")
@@ -156,6 +160,7 @@ function setTextUsiro() {
 function clearText() {
   texts.value = []
   text.value = null
+  settings.currentTextName = ""
 }
 
 function updateIllust() {
@@ -163,6 +168,7 @@ function updateIllust() {
   const reader = new FileReader()
   reader.onload = () => {
     currentIllust.value = reader.result
+    settings.currentIllustName = file.name
   }
   reader.readAsDataURL(file)
   seek.seek = 0
@@ -174,6 +180,7 @@ function updateIllustUsiro() {
   const reader = new FileReader()
   reader.onload = () => {
     currentIllust.value = reader.result
+    settings.currentIllustName = file.name
   }
   reader.readAsDataURL(file)
 }
@@ -213,6 +220,7 @@ function clearIllust() {
   stop()
   illusts.value = []
   currentIllust.value = null
+  settings.currentIllustName = ""
 }
 </script>
 
@@ -239,11 +247,11 @@ function clearIllust() {
       <table>
         <tr>
           <td>画像枚数</td>
-          <td>{{ illusts.length }}</td>
+          <td>{{ illusts.length }}：{{ settings.currentIllustName }}</td>
         </tr>
         <tr>
           <td>テキスト数</td>
-          <td>{{ texts.length }}</td>
+          <td>{{ texts.length }}：{{ settings.currentTextName }}</td>
         </tr>
         <tr>
           <td>ミリ秒</td>
